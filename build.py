@@ -20,13 +20,13 @@ if sys.platform.startswith('linux'):
     print("Spouštím build pro Linux...")
     linux_args = common_args + [
         '--onefile'                  # Vytvoří jenom jeden spustitelný .AppImage/Soubor
-    ]
+    ]   
     PyInstaller.__main__.run(linux_args)
     
 elif sys.platform.startswith('win'):
     print("Spouštím build pro Windows...")
     windows_args = common_args + [
-        '--onedir',                  # Na windowsu je 'onedir' stabilnější při práci s velkými moduly jako je QtMultimeda a ffmpeg.
+        '--onefile',                 # Použijeme onefile i na Windows, aby uživatelé nezkopírovali jen .exe bez složky _internal
         '--icon=icon.png' 
     ]
     PyInstaller.__main__.run(windows_args)

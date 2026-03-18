@@ -57,6 +57,7 @@ def load_qt_modules():
 		"QTimeEdit": widgets.QTimeEdit,
 		"QVBoxLayout": widgets.QVBoxLayout,
 		"QWidget": widgets.QWidget,
+		"QComboBox": widgets.QComboBox,
 		"QMediaPlayer": multimedia.QMediaPlayer,
 		"QAudioOutput": multimedia.QAudioOutput,
 		"QVideoSink": multimedia.QVideoSink,
@@ -98,6 +99,7 @@ QSpinBox = qt["QSpinBox"]
 QTimeEdit = qt["QTimeEdit"]
 QVBoxLayout = qt["QVBoxLayout"]
 QWidget = qt["QWidget"]
+QComboBox = qt["QComboBox"]
 QMediaPlayer = qt["QMediaPlayer"]
 QAudioOutput = qt["QAudioOutput"]
 QVideoSink = qt["QVideoSink"]
@@ -129,6 +131,13 @@ class SettingsDialog(QDialog):
 		self.default_time_input.setTime(QTime.fromString(default_time_str, "HH:mm:ss"))
 		layout.addWidget(self.default_time_input)
 
+		# Theme Settings
+		layout.addWidget(QLabel("App Theme:"))
+		self.theme_input = QComboBox()
+		self.theme_input.addItems(["System", "Light", "Dark"])
+		self.theme_input.setCurrentText(str(self.settings.value("theme", "System")))
+		layout.addWidget(self.theme_input)
+
 		# Buttons
 		btn_layout = QHBoxLayout()
 		save_button = QPushButton("Save")
@@ -146,6 +155,16 @@ class SettingsDialog(QDialog):
 	def save_settings(self) -> None:
 		self.settings.setValue("default_pieces", self.default_pieces_input.value())
 		self.settings.setValue("default_time", self.default_time_input.time().toString("HH:mm:ss"))
+		
+		# Change theme immediately
+		new_theme = self.theme_input.currentText()
+		old_theme = str(self.settings.value("theme", "System"))
+		self.settings.setValue("theme", new_theme)
+		
+		if new_theme != old_theme:
+			from apply_theme import apply_theme_to_app
+			apply_theme_to_app(QApplication.instance(), new_theme)
+
 		self.accept()
 
 
@@ -806,6 +825,12 @@ def resource_path(relative_path):
 
 def main() -> None:
 	app = QApplication(sys.argv)
+	
+	from apply_theme import apply_theme_to_app
+	settings = QSettings("VideoSlicer", "VideoSlicerApp")
+	theme_name = str(settings.value("theme", "System"))
+	apply_theme_to_app(app, theme_name)
+	
 	app.setWindowIcon(QIcon(resource_path("icon.png")))
 	window = MainWindow()
 	window.setWindowIcon(QIcon(resource_path("icon.png")))
