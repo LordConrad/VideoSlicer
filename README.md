@@ -13,20 +13,6 @@ VideoSlicer is a simple GUI app for splitting video files. You can split videos 
 - **FFmpeg** for the actual video splitting (make sure you have `ffmpeg` installed and in your system PATH).
 - **PyInstaller** for building executables.
 
-## Running from source
-```bash
-# 1. Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Linux/macOS
-# .\venv\Scripts\activate   # On Windows
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Run the app
-python main.py
-```
-
 ## Building
 You can build a standalone executable using the provided script. Make sure your virtual environment is active.
 
